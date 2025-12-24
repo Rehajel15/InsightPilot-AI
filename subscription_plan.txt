@@ -1,0 +1,9 @@
+1. Free:
+    - 3 free product analysists (user feedback + AI review)
+
+2. Basic:
+    - Free Product analysis (user feedback + AI review)
+
+3. Premium:
+    - Free Product analysis (user feedback + AI review)
+    - Generel shop analysis (user feedback + AI review + comparision with other shops)
