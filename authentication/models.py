@@ -2,7 +2,7 @@ from django.db import models
 
 class ShopifyStore(models.Model):
     # Store the unique .myshopify.com domain
-    myshopify_domain = models.CharField(max_length=255, unique=True)
+    shopify_domain = models.CharField(max_length=255, unique=True)
     # The master key for API access
     access_token = models.CharField(max_length=255)
     

@@ -1,0 +1,6 @@
+{
+    "authentication_errors": {
+        "A01": "No shop-url entered. Please enter a valid shop-url. For example: ?shop=test-shop-234576183295487458331.myshopify.com",
+        "A02": "No valid shop url. Please enter a valid shop-url."
+    }
+}

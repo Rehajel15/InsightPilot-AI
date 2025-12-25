@@ -32,7 +32,7 @@ def shopify_callback(request):
     
     # Save or update the store credentials in our database
     store, created = ShopifyStore.objects.update_or_create(
-        myshopify_domain=shop_url,
+        shopify_domain=shop_url,
         defaults={'access_token': access_token}
     )
     

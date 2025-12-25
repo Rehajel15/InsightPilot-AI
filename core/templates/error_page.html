@@ -9,7 +9,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>InsightPilot AI</title>
-        <meta name="description" content="Home page of InsightPilot AI">
+        <meta name="description" content="Error page of InsightPilot AI">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
         <script src="{% static 'js/bootstrap.bundle.min.js' %}" async defer></script>
@@ -23,21 +23,15 @@
                         InsightPilot AI
                     </a>
                 </div>
-                <div class="navbar-brand text-decoration-underline">{{shop_name}}</div>
-                <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search for products" aria-label="Search"/>
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
             </div>
         </nav>
-        {% if messages %}
-        <div class="messages">
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}" style="padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px; color: #3c763d; background-color: #dff0d8; border-color: #d6e9c6;">
-                    {{ message }}
+        <div class="container w-100 mt-5 d-flex justify-content-center align-items-center">
+            <div class="card text-white bg-info mb-3 w-50">
+                <div class="card-body">
+                    <h4 class="card-title text-center">Error code {{error_code}}</h4>
+                    <p class="card-text text-center">{{error_message}}</p>
                 </div>
-            {% endfor %}
+            </div>
         </div>
-        {% endif %}
     </body>
 </html>
