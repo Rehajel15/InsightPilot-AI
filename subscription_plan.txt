@@ -6,4 +6,5 @@
 
 3. Premium:
     - Free Product analysis (user feedback + AI review)
-    - Generel shop analysis (user feedback + AI review + comparision with other shops)
+    - Market Intelligence (user feedback + AI review + comparision with other shops)
+    - Suggestions for improvement
