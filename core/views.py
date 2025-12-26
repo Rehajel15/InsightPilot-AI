@@ -43,6 +43,14 @@ def home(request):
     # Information from the shopify server
     shop_name = shop.name          # Name of the shop
     # shop_owner = shop.shop_owner   
-    # shop_email = shop.email        
+    # shop_email = shop.email
+    products = shopify.Product.find()
 
-    return render(request, 'index.html', {'shop_url': shop_url, 'shop_name': shop_name})
+    context = {
+        'products': products,
+        'shop_url': shop_url,
+        'shop_name': shop_name
+    }
+            
+
+    return render(request, 'index.html', context)
