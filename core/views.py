@@ -9,13 +9,12 @@ from pathlib import Path
 def shopify_auth_required(f):
     @wraps(f)
     def decorated_function(request, *args, **kwargs):
-        shop_url = request.GET.get('shop') or request.session.get('shopify_shop_url')
+        shop_url = request.GET.get('shop') or request.session.get('shopify_shop_url') # Get shop url from the link
         
-        if not shop_url:
-            # If no shop is provided, we might need to redirect to a login page
-            BASE_DIR = Path(__file__).resolve().parent
+        if not shop_url: # No shop url entered -> Error page with error code A01
+            BASE_DIR = Path(__file__).resolve().parent # Base directory 
 
-            with open(f"{BASE_DIR.parent}/data/error_codes.json") as file:
+            with open(f"{BASE_DIR.parent}/data/error_codes.json") as file: # Get error code from the json file 
                 d = json.load(file)
             error_code = "A01"
             error_message = d["authentication_errors"][error_code]
@@ -26,7 +25,7 @@ def shopify_auth_required(f):
             # Create and activate the session
             session = shopify.Session(shop_data.shopify_domain, "2024-10", shop_data.access_token)
             shopify.ShopifyResource.activate_session(session)
-        except ShopifyStore.DoesNotExist:
+        except ShopifyStore.DoesNotExist: # No valid shop url -> Error page with error code A02
             BASE_DIR = Path(__file__).resolve().parent
             with open(f"{BASE_DIR.parent}/data/error_codes.json") as file:
                 d = json.load(file)
@@ -34,7 +33,7 @@ def shopify_auth_required(f):
             error_message = d["authentication_errors"][error_code]
             return render(request, 'error_page.html', {'error_code': error_code, 'error_message': error_message}) 
 
-        return f(request, *args, **kwargs)
+        return f(request, *args, **kwargs) # Return regular request
     return decorated_function
 
 @shopify_auth_required

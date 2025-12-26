@@ -4,6 +4,6 @@ class NgrokSkipWarningMiddleware:
 
     def __call__(self, request):
         response = self.get_response(request)
-        # Füge den Header hinzu, um die ngrok-Warnseite zu überspringen
+        # Add the header to skip the ngrok-warningpage
         response["ngrok-skip-browser-warning"] = "true"
         return response

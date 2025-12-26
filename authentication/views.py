@@ -7,14 +7,14 @@ from .models import ShopifyStore
 from django.contrib import messages
 
 def shopify_login(request):
-    shop_url = request.GET.get('shop')
+    shop_url = request.GET.get('shop') # Get shop from the link
     if not shop_url:
         return HttpResponse("Please enter a shop parameter", status=400)
 
     # Initialize the Shopify-Session
     shopify.Session.setup(api_key=settings.SHOPIFY_API_KEY, secret=settings.SHOPIFY_API_SECRET)
     
-    permission_url = shopify.Session(shop_url, "2024-10").create_permission_url(
+    permission_url = shopify.Session(shop_url, "2024-10").create_permission_url( # Create permisson url to add the app to the shopify store
         settings.SHOPIFY_SCOPES, 
         f"{settings.SHOPIFY_APP_URL}/auth/callback"
     )
