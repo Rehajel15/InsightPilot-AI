@@ -1,0 +1,147 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>InsightPilot AI</title>
+        <meta name="description" content="Home page of InsightPilot AI">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+        <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    </head>
+    <body class="bg-light">
+        <nav class="navbar navbar-dark bg-dark mb-4">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/?shop={{shop_url}}">← Back to Products</a>
+                <span class="navbar-text text-white">InsightPilot AI | {{ shop_name }}</span>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="row mb-4 align-items-center">
+                <div class="col-md-2">
+                    {% if product.images %}
+                        <img src="{{ product.images.0.src }}" class="img-fluid rounded shadow-sm border" alt="Product Image">
+                    {% else %}
+                        <div class="bg-secondary text-white rounded d-flex align-items-center justify-content-center" style="height: 150px;">No Image</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-10">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item small text-uppercase">{{ product.product_type }}</li>
+                            <li class="breadcrumb-item small text-uppercase">{{ product.vendor }}</li>
+                        </ol>
+                    </nav>
+                    <h1 class="display-5 fw-bold">{{ product.title }}</h1>
+                    <span class="badge {% if product.status == 'active' %}bg-success{% else %}bg-warning text-dark{% endif %}">
+                        Status: {{ product.status|upper }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-white fw-bold">Product Specifications</div>
+                        <div class="card-body p-0">
+                            <table class="table table-hover mb-0">
+                                <tbody>
+                                    <tr>
+                                        <th class="ps-3 w-25">Handle</th>
+                                        <td><code>{{ product.handle }}</code></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="ps-3">Tags</th>
+                                        <td>
+                                            {% for tag in product.tags.split %}
+                                                <span class="badge border text-dark bg-light">{{ tag }}</span>
+                                            {% endfor %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="ps-3">Created At</th>
+                                        <td>{{ product.created_at|slice:":10" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="ps-3">Description</th>
+                                        <td class="small text-muted">
+                                            {{ product.body_html|striptags|truncatewords:30 }}
+                                            <hr>
+                                            <button class="btn btn-sm btn-outline-secondary">Show full HTML</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-white fw-bold">Variants & Stock Analysis</div>
+                        <div class="card-body p-0">
+                            <table class="table table-sm mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-3">Title</th>
+                                        <th>Price</th>
+                                        <th>SKU</th>
+                                        <th class="text-center">Stock</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for variant in product.variants %}
+                                    <tr>
+                                        <td class="ps-3">{{ variant.title }}</td>
+                                        <td>{{ variant.price }} {{ product.currency }}</td>
+                                        <td><small class="text-muted">{{ variant.sku|default:"-" }}</small></td>
+                                        <td class="text-center">
+                                            <span class="{% if variant.inventory_quantity < 5 %}text-danger fw-bold{% endif %}">
+                                                {{ variant.inventory_quantity }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="card border-primary mb-4 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Quick Stats</h5>
+                            <hr>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Total Inventory:</span>
+                                <span class="fw-bold">{{ total_inventory }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Price Range:</span>
+                                <span class="fw-bold">{{ price_range }} €</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Total Variants:</span>
+                                <span class="fw-bold">{{ product.variants|length }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm bg-dark text-white">
+                        <div class="card-body">
+                            <h5 class="card-title text-info">✨ AI Readiness</h5>
+                            <p class="small opacity-75">Intelligence Check for this product:</p>
+                            <ul class="list-unstyled small">
+                                <li class="mb-2">✅ SEO Meta-Tags detected</li>
+                                <li class="mb-2">✅ Multi-Variant Data available</li>
+                                <li class="mb-2 text-warning">⚠️ Description too short for Deep Analysis</li>
+                            </ul>
+                            <button class="btn btn-info btn-sm w-100 mt-2">Start AI Content Audit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

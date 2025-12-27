@@ -54,3 +54,26 @@ def home(request):
             
 
     return render(request, 'index.html', context)
+
+@shopify_auth_required
+def product_analysis(request):
+    shop_url = request.GET.get('shop') or request.session.get('shop_url')
+
+    product_id = request.GET.get('product')
+    product_id = product_id.replace('/','')
+    product = shopify.Product.find(product_id)
+    
+    # Berechnungen für das Dashboard
+    total_inventory = sum(v.inventory_quantity for v in product.variants)
+    price_min = min(float(v.price) for v in product.variants)
+    price_max = max(float(v.price) for v in product.variants)
+    
+    context = {
+        'product': product,
+        'total_inventory': total_inventory,
+        'price_range': f"{price_min:.2f} - {price_max:.2f}" if price_min != price_max else f"{price_min:.2f}",
+        'shop_name': shopify.Shop.current().name,
+        'shop_url': shop_url
+    }
+    return render(request, 'product_analysis.html', context)
+

@@ -1,10 +1,37 @@
-1. Free:
-    - 3 free product analysists (user feedback + AI review)
 
-2. Basic:
-    - Free Product analysis (user feedback + AI review)
+1. Free Plan: "The Basics"
+Zielgruppe: Einsteiger, die nur einen schnellen Überblick wollen.
 
-3. Premium:
-    - Free Product analysis (user feedback + AI review)
-    - Market Intelligence (user feedback + AI review + comparision with other shops)
-    - Suggestions for improvement
+Price Comparison: Zeigt den aktuellen Preis im Vergleich zum Durchschnittspreis ähnlicher Produkte im eigenen Shop.
+
+Basic SEO Check: Analysiert, ob der Produkttitel und die Beschreibung die optimale Länge für Google haben.
+
+Status Badge: Ein einfacher "Health Score" (0–100) basierend auf Vollständigkeit der Daten (Bilder, Tags, Beschreibungen).
+
+Limit: Analyse von maximal 10 Produkten pro Monat.
+
+2. Basic Plan: "Growth & Optimization"
+Zielgruppe: Aktive Händler, die ihre Verkäufe steigern wollen.
+
+Competitor Benchmarking: Die KI vergleicht das Produkt mit öffentlichen Daten von Top-Konkurrenten (Preise & Features).
+
+AI Copywriter: Ein Button, der die Produktbeschreibung basierend auf Hochkonvertierungs-Mustern neu schreibt.
+
+Variant Analysis: Welche Größe/Farbe hat den meisten Bestand? Die KI schlägt vor, welche Varianten in den Sale sollten, um Kapital freizusetzen.
+
+Image Analysis: Prüft, ob die Bilder den Shopify-Best-Practices entsprechen (z. B. weißer Hintergrund, Auflösung).
+
+Limit: Analyse von bis zu 100 Produkten pro Monat.
+
+3. Premium Plan: "Market Intelligence Pro"
+Zielgruppe: Profis, die den Markt dominieren wollen.
+
+Predictive Pricing: Die KI schlägt den optimalen Preis für die nächsten 30 Tage vor, basierend auf Saisonalität und Markttrends.
+
+Trend Gap Detection: Die KI erkennt, welche Keywords/Features gerade im Trend liegen (z. B. "Nachhaltig"), die dein Produkt noch nicht nutzt.
+
+Inventory Forecasting: Vorhersage, wann das Produkt ausverkauft sein wird, um rechtzeitig nachzubestellen.
+
+Cross-Selling Engine: Vorschläge, welche anderen Produkte im Shop perfekt zu diesem passen (für "Frequently bought together").
+
+Unlimited Analyses: Keine Limits und vorrangige KI-Verarbeitung.
