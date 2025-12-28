@@ -5,6 +5,35 @@ import shopify
 from functools import wraps
 from authentication.models import ShopifyStore
 from pathlib import Path
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
+from authentication.models import ShopifyStore
+
+@csrf_exempt
+def webhook_subscription_update(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        shop_domain = request.headers.get('X-Shopify-Shop-Domain')
+        
+        # Access the subscription details from the JSON
+        subscription = data.get('app_subscription', {})
+        status = subscription.get('status')
+        name = subscription.get('name')
+
+        try:
+            shop = ShopifyStore.objects.get(shopify_domain=shop_domain)
+            if status == 'ACTIVE':
+                shop.plan_name = name
+            else:
+                shop.plan_name = 'Free'
+            shop.save()
+        except ShopifyStore.DoesNotExist:
+            return HttpResponse(status=404)
+
+        return HttpResponse(status=200)
+    return HttpResponse(status=405)
+
+
 
 def shopify_auth_required(f):
     @wraps(f)
@@ -36,10 +65,12 @@ def shopify_auth_required(f):
         return f(request, *args, **kwargs) # Return regular request
     return decorated_function
 
+
 @shopify_auth_required
 def home(request):
-    shop_url = request.GET.get('shop') or request.session.get('shop_url')
-    shop = shopify.Shop.current() 
+    shop = shopify.Shop.current()
+    shop_url = shop.myshopify_domain 
+    current_plan = ShopifyStore.objects.get(shopify_domain=shop_url).plan_name
     # Information from the shopify server
     shop_name = shop.name          # Name of the shop
     # shop_owner = shop.shop_owner   
@@ -49,7 +80,8 @@ def home(request):
     context = {
         'products': products,
         'shop_url': shop_url,
-        'shop_name': shop_name
+        'shop_name': shop_name,
+        'user_plan': current_plan
     }
             
 
@@ -57,19 +89,21 @@ def home(request):
 
 @shopify_auth_required
 def product_analysis(request):
-    shop_url = request.GET.get('shop') or request.session.get('shop_url')
-
+    shop = shopify.Shop.current()
+    shop_url = shop.myshopify_domain
+    current_plan = ShopifyStore.objects.get(shopify_domain=shop_url).plan_name
     product_id = request.GET.get('product')
     product_id = product_id.replace('/','')
     product = shopify.Product.find(product_id)
     
-    # Berechnungen für das Dashboard
+    # Calculations for the dashboard
     total_inventory = sum(v.inventory_quantity for v in product.variants)
     price_min = min(float(v.price) for v in product.variants)
     price_max = max(float(v.price) for v in product.variants)
     
     context = {
         'product': product,
+        'user_plan': current_plan,
         'total_inventory': total_inventory,
         'price_range': f"{price_min:.2f} - {price_max:.2f}" if price_min != price_max else f"{price_min:.2f}",
         'shop_name': shopify.Shop.current().name,

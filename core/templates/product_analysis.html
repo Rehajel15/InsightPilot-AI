@@ -128,18 +128,151 @@
                         </div>
                     </div>
 
-                    <div class="card shadow-sm bg-dark text-white">
+                    {% if user_plan == 'Premium' %}
+                    <div class="card shadow-sm bg-dark text-white border-info">
                         <div class="card-body">
-                            <h5 class="card-title text-info">✨ AI Readiness</h5>
-                            <p class="small opacity-75">Intelligence Check for this product:</p>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title text-info mb-0">🚀 Market Intelligence Pro</h5>
+                                <span class="badge bg-info text-dark">PREMIUM</span>
+                            </div>
+                            <p class="small opacity-75">Dominate the market with predictive analytics and trend detection:</p>
+                            
                             <ul class="list-unstyled small">
-                                <li class="mb-2">✅ SEO Meta-Tags detected</li>
-                                <li class="mb-2">✅ Multi-Variant Data available</li>
-                                <li class="mb-2 text-warning">⚠️ Description too short for Deep Analysis</li>
+                                <li class="mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <span><i class="bi bi-crystal-ball"></i> <strong>Predictive Pricing</strong></span>
+                                    </div>
+                                    <div class="ps-3 text-info opacity-75" style="font-size: 0.85rem;">
+                                        Get AI-suggested prices for the next 30 days based on seasonality and live market trends.
+                                    </div>
+                                </li>
+
+                                <li class="mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <span><i class="bi bi-incognito"></i> <strong>Trend Gap Detection</strong></span>
+                                    </div>
+                                    <div class="ps-3 text-info opacity-75" style="font-size: 0.85rem;">
+                                        Find missing keywords (e.g., "sustainable") currently trending in your niche.
+                                    </div>
+                                </li>
+
+                                <li class="mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <span><i class="bi bi-cart-check"></i> <strong>Inventory & Cross-Sell Engine</strong></span>
+                                    </div>
+                                    <div class="ps-3 text-info opacity-75" style="font-size: 0.85rem;">
+                                        Predicts "Sold Out" dates and suggests "Frequently Bought Together" bundles.
+                                    </div>
+                                </li>
                             </ul>
-                            <button class="btn btn-info btn-sm w-100 mt-2">Start AI Content Audit</button>
+
+                            <div class="mt-3 p-2 bg-info bg-opacity-10 rounded border border-info border-opacity-25">
+                                <p class="x-small mb-0 text-info" style="font-size: 0.75rem;">
+                                    <strong>Limit:</strong> Unlimited Analyses. <br>
+                                    <i class="bi bi-lightning-fill"></i> Priority AI Processing enabled.
+                                </p>
+                            </div>
+
+                            <button class="btn btn-info btn-sm w-100 mt-3 fw-bold text-dark">Launch Deep Intelligence</button>
                         </div>
                     </div>
+                    {% elif user_plan == 'Basic' %}
+                    <div class="card shadow-sm bg-dark text-white border-secondary">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title text-secondary mb-0">✨ AI Growth & Optimization</h5>
+                                <span class="badge bg-secondary">BASIC</span>
+                            </div>
+                            <p class="small opacity-75">Scale your sales with competitor benchmarks and automated copywriting:</p>
+                            
+                            <ul class="list-unstyled small">
+                                <li class="mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <span><i class="bi bi-person-vs"></i> <strong>Competitor Benchmarking</strong></span>
+                                    </div>
+                                    <div class="ps-3 text-white-50" style="font-size: 0.85rem;">
+                                        AI compares your prices and features against top market competitors using public data.
+                                    </div>
+                                </li>
+
+                                <li class="mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <span><i class="bi bi-magic"></i> <strong>AI Copywriter</strong></span>
+                                    </div>
+                                    <div class="ps-3 text-white-50" style="font-size: 0.85rem;">
+                                        Rewrite descriptions instantly using high-conversion patterns and psychological triggers.
+                                    </div>
+                                </li>
+
+                                <li class="mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <span><i class="bi bi-camera"></i> <strong>Smart Variant & Image Audit</strong></span>
+                                    </div>
+                                    <div class="ps-3 text-white-50" style="font-size: 0.85rem;">
+                                        Identifies overstock variants for sales and checks if images meet Shopify Best Practices.
+                                    </div>
+                                </li>
+                            </ul>
+
+                            <div class="mt-3 p-2 bg-secondary bg-opacity-25 rounded">
+                                <p class="x-small mb-0" style="font-size: 0.75rem;">
+                                    <strong>Limit:</strong> 100 products per month. <br>
+                                    <i class="bi bi-check2-all text-success"></i> Includes all Free features.
+                                </p>
+                            </div>
+
+                            <button class="btn btn-secondary btn-sm w-100 mt-3 fw-bold">Run Growth Analysis</button>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="card shadow-sm bg-dark text-white border-light">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title text-info mb-0">✨ AI Readiness: The Basics</h5>
+                                <span class="badge bg-light text-dark">FREE</span>
+                            </div>
+                            <p class="small opacity-75">The AI audits your product data for fundamental health and SEO compliance:</p>
+                            
+                            <ul class="list-unstyled small">
+                                <li class="mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <span><i class="bi bi-tag"></i> <strong>Internal Price Comparison</strong></span>
+                                    </div>
+                                    <div class="ps-3 text-white-50" style="font-size: 0.85rem;">
+                                        The AI compares this product's price against the average price of similar items within your own shop.
+                                    </div>
+                                </li>
+
+                                <li class="mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <span><i class="bi bi-google"></i> <strong>Basic SEO Check</strong></span>
+                                    </div>
+                                    <div class="ps-3 text-white-50" style="font-size: 0.85rem;">
+                                        Analyzes if your product title and description have the optimal length to be ranked effectively by Google.
+                                    </div>
+                                </li>
+
+                                <li class="mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <span><i class="bi bi-heart-pulse"></i> <strong>Data Health Score (0-100)</strong></span>
+                                    </div>
+                                    <div class="ps-3 text-white-50" style="font-size: 0.85rem;">
+                                        A simple score based on the completeness of your data, including images, tags, and descriptions.
+                                    </div>
+                                </li>
+                            </ul>
+
+                            <div class="mt-3 p-2 bg-secondary bg-opacity-25 rounded">
+                                <p class="x-small mb-0" style="font-size: 0.75rem;">
+                                    <strong>Limit:</strong> 10 products per month. <br>
+                                    <a href="#" class="text-info text-decoration-none">Upgrade for competitor data & AI writing.</a>
+                                </p>
+                            </div>
+
+                            <button class="btn btn-info btn-sm w-100 mt-3 fw-bold">Start Basic Analysis</button>
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

@@ -88,6 +88,7 @@
             </div>
             <div class="d-flex flex-column align-items-center col-xl-3 col-12 mt-5 g-5">
                 <h3 class="mb-4 mt-3">Market Intelligence Insights</h3>
+                {% if user_plan == 'Premium' %}
                 <div class="card mb-3 border-start border-primary border-4 shadow-sm">
                     <div class="card-body">
                         <h5 class="card-title d-flex align-items-center">
@@ -134,6 +135,49 @@
                         </p>
                     </div>
                 </div>
+                {% else %}
+                <div class="position-relative w-100">
+                    
+                    <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center rounded shadow-lg" 
+                        style="background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(4px); z-index: 10;">
+                        <div class="text-center p-4 bg-white rounded shadow border">
+                            <span style="font-size: 2rem;">🔒</span>
+                            <h5 class="fw-bold mt-2">Premium Feature</h5>
+                            <p class="small text-muted mb-3">Upgrade to <strong>Premium</strong> to unlock deep market insights, competitor gaps, and predictive alerts.</p>
+                            <a href="/billing" class="btn btn-info btn-sm fw-bold">Upgrade Now</a>
+                        </div>
+                    </div>
+
+                    <div style="user-select: none; pointer-events: none; opacity: 0.4;">
+                        <div class="card mb-3 border-start border-primary border-4 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title d-flex align-items-center">
+                                    <span class="me-2">📊</span> Competitor Benchmarking
+                                </h5>
+                                <p class="card-text text-muted small">Comparison data is currently hidden.</p>
+                            </div>
+                        </div>
+
+                        <div class="card mb-3 border-start border-warning border-4 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title d-flex align-items-center">
+                                    <span class="me-2">🚀</span> Market Opportunity Gap
+                                </h5>
+                                <p class="card-text text-muted small">Analyze trending keywords and niche opportunities.</p>
+                            </div>
+                        </div>
+
+                        <div class="card mb-3 border-start border-danger border-4 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title d-flex align-items-center text-danger">
+                                    <span class="me-2">⚠️</span> Risk Alerts
+                                </h5>
+                                <p class="card-text text-muted small">Customer retention monitoring active in Premium.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </div>
         <script src="{% static 'js/searchField.js' %}"></script>
