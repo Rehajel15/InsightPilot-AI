@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>InsightPilot AI</title>
+    <meta name="description" content="Analyse your product with AI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <style>
+        .pricing-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            border-radius: 15px;
+        }
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background-color: transparent;
+            border-bottom: none;
+            padding-top: 2rem;
+        }
+        .plan-price {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        .feature-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">Upgrade Your Intelligence</h1>
+        <p class="lead text-muted">Choose the plan that fits your business scale.</p>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="col">
+            <div class="card h-100 pricing-card text-center">
+                <div class="card-header">
+                    <h3 class="fw-normal">Free</h3>
+                </div>
+                <div class="card-body">
+                    <div class="plan-price">$0<span class="text-muted fs-6">/mo</span></div>
+                    <ul class="feature-list mt-3">
+                        <li>10 Product Analyses / mo</li>
+                        <li>Basic Market Insights</li>
+                        <li>Email Support</li>
+                        <li class="text-muted text-decoration-line-through">AI Copywriter</li>
+                        <li class="text-muted text-decoration-line-through">Competitor Tracking</li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-transparent border-0 pb-4">
+                    <button class="btn btn-outline-secondary w-100 disabled">Current Plan</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100 pricing-card text-center border-primary shadow-sm">
+                <div class="card-header">
+                    <h3 class="fw-normal text-primary">Basic</h3>
+                </div>
+                <div class="card-body">
+                    <div class="plan-price">$14.99<span class="text-muted fs-6">/mo</span></div>
+                    <ul class="feature-list mt-3">
+                        <li>50 Product Analyses / mo</li>
+                        <li>Advanced Market Insights</li>
+                        <li><strong>AI Copywriter Included</strong></li>
+                        <li>Priority Support</li>
+                        <li class="text-muted text-decoration-line-through">Competitor Tracking</li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-transparent border-0 pb-4">
+                    <a href="{% url 'create_sub' 'basic' %}" class="btn btn-primary w-100">Upgrade to Basic</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100 pricing-card text-center">
+                <div class="card-header">
+                    <h3 class="fw-normal">Premium</h3>
+                </div>
+                <div class="card-body">
+                    <div class="plan-price">$29.99<span class="text-muted fs-6">/mo</span></div>
+                    <ul class="feature-list mt-3">
+                        <li><strong>Unlimited</strong> Analyses</li>
+                        <li>Full Market Intelligence</li>
+                        <li>AI Copywriter Pro</li>
+                        <li>Competitor Tracking</li>
+                        <li>24/7 VIP Support</li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-transparent border-0 pb-4">
+                    <a href="{% url 'create_sub' 'premium' %}" class="btn btn-dark w-100">Go Premium</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-5">
+        <p class="text-muted">All plans include a 7-day free trial. You can cancel anytime through your Shopify Admin.</p>
+    </div>
+</div>
+
+</body>
+</html>

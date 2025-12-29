@@ -22,5 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls')), # Main pages
     path('auth/', include('authentication.urls')), # Shop authentication pages
-    path('webhooks/subscription-update/', views.webhook_subscription_update, name='webhook_sub'),
+    path('billing/', include('billing.urls')), # Billing pages
 ]

@@ -5,33 +5,7 @@ import shopify
 from functools import wraps
 from authentication.models import ShopifyStore
 from pathlib import Path
-from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
 from authentication.models import ShopifyStore
-
-@csrf_exempt
-def webhook_subscription_update(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        shop_domain = request.headers.get('X-Shopify-Shop-Domain')
-        
-        # Access the subscription details from the JSON
-        subscription = data.get('app_subscription', {})
-        status = subscription.get('status')
-        name = subscription.get('name')
-
-        try:
-            shop = ShopifyStore.objects.get(shopify_domain=shop_domain)
-            if status == 'ACTIVE':
-                shop.plan_name = name
-            else:
-                shop.plan_name = 'Free'
-            shop.save()
-        except ShopifyStore.DoesNotExist:
-            return HttpResponse(status=404)
-
-        return HttpResponse(status=200)
-    return HttpResponse(status=405)
 
 
 
@@ -89,8 +63,7 @@ def home(request):
 
 @shopify_auth_required
 def product_analysis(request):
-    shop = shopify.Shop.current()
-    shop_url = shop.myshopify_domain
+    shop_url = request.GET.get('shop') or request.session.get('shopify_shop_url')
     current_plan = ShopifyStore.objects.get(shopify_domain=shop_url).plan_name
     product_id = request.GET.get('product')
     product_id = product_id.replace('/','')
