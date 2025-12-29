@@ -35,6 +35,9 @@ ALLOWED_HOSTS = allowed_hosts.split(",") if allowed_hosts else []
 # Allows Shopify to load your app in an iframe
 X_FRAME_OPTIONS = 'ALLOWALL'
 
+# App domain
+APP_DOMAIN = os.getenv('APP_DOMAIN')
+
 # shopify_app/settings.py
 
 SHOPIFY_API_KEY = os.getenv('SHOPIFY_API_KEY')
@@ -71,7 +74,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
-    'authentication'
+    'authentication',
+    'billing',
 ]
 
 MIDDLEWARE = [

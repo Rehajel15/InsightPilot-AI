@@ -5,16 +5,17 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from authentication.models import ShopifyStore
-from views import shopify_auth_required
+from core.views import shopify_auth_required
 
 # 1. Show the pricing plans
+@shopify_auth_required
 def pricing_page(request):
-    return render(request, 'pricing.html')
+    shop_url = request.GET.get('shop')
+    return render(request, 'pricing.html', {'shop_url': shop_url})
 
 # 2. Create the charge and redirect to Shopify
 @shopify_auth_required
 def create_subscription(request, plan_type):
-    # Mapping the plan types to names and prices
     plans = {
         'basic': {'name': 'Basic Plan', 'price': 14.99},
         'premium': {'name': 'Premium Plan', 'price': 29.99}
@@ -24,16 +25,20 @@ def create_subscription(request, plan_type):
     if not selected_plan:
         return redirect('pricing')
 
-    # Create a Recurring Charge in Shopify
+    # Create the charge
     charge = shopify.RecurringApplicationCharge.create({
         "name": selected_plan['name'],
         "price": selected_plan['price'],
         "return_url": f"https://{settings.APP_DOMAIN}/billing/charge-callback/",
-        "test": True, # SET TO FALSE FOR LIVE APPS
+        "test": True,
         "trial_days": 7
     })
 
-    # Send user to Shopify's approve page
+    # DEBUG: Check if there are errors if the URL is missing
+    if not hasattr(charge, 'confirmation_url'):
+        print(f"Shopify Error: {charge.errors.full_messages()}")
+        return HttpResponse(f"Error creating charge: {charge.errors.full_messages()}")
+
     return redirect(charge.confirmation_url)
 
 # 3. Activate the charge after user clicked 'Approve'
@@ -48,7 +53,7 @@ def activate_subscription(request):
     if charge.status == "accepted":
         charge.activate()
     
-    return redirect('dashboard') # Or wherever your home view is
+    return redirect('/') # Or wherever your home view is
 
 # 4. The Webhook receiver (The silent listener)
 @csrf_exempt
