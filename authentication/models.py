@@ -6,7 +6,14 @@ class ShopifyStore(models.Model):
     # The master key for API access
     access_token = models.CharField(max_length=255)
     # The plan for the shop
-    plan_name = models.CharField(max_length=50, default='Free')
+
+    PLAN_CHOICES = [
+        ('Free', 'Free'),
+        ('Basic', 'Basic'),
+        ('Premium', 'Premium'),
+    ]
+
+    plan_name = models.CharField(max_length=50, choices=PLAN_CHOICES, default='Free')
     
     # Timestamps for better tracking
     created_at = models.DateTimeField(auto_now_add=True)

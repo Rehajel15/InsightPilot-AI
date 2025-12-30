@@ -5,7 +5,6 @@ import shopify
 from functools import wraps
 from authentication.models import ShopifyStore
 from pathlib import Path
-from authentication.models import ShopifyStore
 
 
 
