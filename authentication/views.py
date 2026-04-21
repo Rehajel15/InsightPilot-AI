@@ -38,6 +38,7 @@ def shopify_callback(request):
     
     if created:
         messages.success(request, f"Successfully installed on {shop_url}!")
+        print("Created!")
     else:
         messages.info(request, f"Settings updated for {shop_url}.")
 

@@ -54,9 +54,8 @@ SESSION_COOKIE_SECURE = True  # Required for SameSite='None'
 CSRF_COOKIE_SAMESITE = 'None'
 CSRF_COOKIE_SECURE = True
 
-# Add your ngrok URL and Shopify admin domains here
 CSRF_TRUSTED_ORIGINS = [
-    'https://mauricio-coelanaglyphic-menacingly.ngrok-free.dev',
+    f'https://{APP_DOMAIN}',
     'https://*.myshopify.com',
     'https://admin.shopify.com',
 ]
@@ -159,3 +158,9 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}

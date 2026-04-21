@@ -1,185 +1,557 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>InsightPilot AI</title>
-        <meta name="description" content="Home page of InsightPilot AI">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-        <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    </head>
-    <body>
-        <nav class="navbar bg-body-tertiary">
-            <div class="container-fluid">
-                <div>
-                    <a class="navbar-brand" href="#">
-                        <img src="{% static 'images/InsightPilot_AI_icon.jpg' %}" alt="Logo" height="30" class="d-inline-block align-text-top rounded">
-                        InsightPilot AI
-                    </a>
-                </div>
-                <div class="navbar-brand text-decoration-underline">{{shop_name}}</div>
-                <form id="search-form" class="d-flex" role="search">
-                    <input id="product-search" class="form-control me-2" type="search" placeholder="Search for products" aria-label="Search"/>
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
-            </div>
-        </nav>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>InsightPilot AI — {{ shop_name }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <style>
+        :root {
+            --accent:       #6366f1;
+            --accent-light: #818cf8;
+            --border:       #e2e8f0;
+            --text-muted:   #64748b;
+            --surface:      #ffffff;
+            --surface-2:    #f8fafc;
+        }
 
+        * { box-sizing: border-box; }
+
+        body {
+            background: var(--surface-2);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #1e293b;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
+        /* ── Navbar ── */
+        .top-nav {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 0 1.5rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-weight: 800;
+            font-size: 1rem;
+            color: #1e293b;
+            text-decoration: none;
+        }
+        .nav-brand img {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        .nav-brand .logo-fallback {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #6366f1, #818cf8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 800;
+        }
+        .shop-pill {
+            background: #f1f5f9;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 0.3rem 0.9rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #475569;
+        }
+        .search-wrap {
+            display: flex;
+            align-items: center;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.35rem 0.75rem;
+            gap: 0.5rem;
+            width: 260px;
+            transition: border-color .15s, box-shadow .15s;
+        }
+        .search-wrap:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(99,102,241,.12);
+        }
+        .search-wrap svg { color: var(--text-muted); flex-shrink: 0; }
+        .search-wrap input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 0.875rem;
+            color: #1e293b;
+            width: 100%;
+        }
+        .search-wrap input::placeholder { color: #94a3b8; }
+
+        /* ── Layout ── */
+        .page-wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 3rem;
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        /* ── Page header ── */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+        }
+        .page-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin: 0;
+        }
+        .count-badge {
+            background: #ede9fe;
+            color: var(--accent);
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 0.3rem 0.75rem;
+            border-radius: 20px;
+            border: 1px solid #c4b5fd;
+        }
+
+        /* ── Alert messages ── */
+        .alert-custom {
+            border-radius: 12px;
+            padding: 0.85rem 1.25rem;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            border: 1px solid;
+        }
+        .alert-success { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
+        .alert-info    { background: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
+
+        /* ── Product table panel ── */
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0,0,0,.06);
+        }
+
+        .product-table { width: 100%; border-collapse: collapse; }
+        .product-table thead tr {
+            border-bottom: 2px solid var(--border);
+            background: #f8fafc;
+        }
+        .product-table th {
+            padding: 0.75rem 1.25rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+        .product-table tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background .1s;
+        }
+        .product-table tbody tr:last-child { border-bottom: none; }
+        .product-table tbody tr:hover { background: #f8fafc; }
+        .product-table td { padding: 0.9rem 1.25rem; vertical-align: middle; }
+
+        .product-img {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 1px solid var(--border);
+        }
+        .product-img-placeholder {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: #f1f5f9;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+        .product-title { font-weight: 600; font-size: 0.9rem; color: #1e293b; }
+        .product-type  { font-size: 0.78rem; color: var(--text-muted); }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .status-pill::before {
+            content: '';
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+        .pill-active   { background: #dcfce7; color: #16a34a; }
+        .pill-inactive { background: #fef9c3; color: #a16207; }
+
+        .btn-analyze {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.45rem 0.9rem;
+            background: #ede9fe;
+            color: var(--accent);
+            border: 1px solid #c4b5fd;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background .15s, color .15s;
+            white-space: nowrap;
+        }
+        .btn-analyze:hover {
+            background: var(--accent);
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3.5rem 2rem;
+            color: var(--text-muted);
+        }
+        .empty-state .empty-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .empty-state p { font-size: 0.9rem; margin: 0; }
+
+        /* ── Sidebar ── */
+        .sidebar-title {
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .sidebar-title .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        /* Insight cards (Premium) */
+        .insight-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 0.85rem;
+            box-shadow: 0 1px 4px rgba(0,0,0,.05);
+        }
+        .insight-card-inner {
+            display: flex;
+            gap: 0.85rem;
+            padding: 1rem 1.1rem;
+            align-items: flex-start;
+        }
+        .insight-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .icon-blue   { background: #eff6ff; }
+        .icon-green  { background: #f0fdf4; }
+        .icon-yellow { background: #fffbeb; }
+        .icon-red    { background: #fef2f2; }
+        .insight-card h6 {
+            font-size: 0.82rem;
+            font-weight: 700;
+            margin: 0 0 0.3rem;
+            color: #1e293b;
+        }
+        .insight-card p {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin: 0;
+            line-height: 1.5;
+        }
+        .insight-card p strong { color: #1e293b; }
+
+        /* Locked state */
+        .locked-wrap {
+            position: relative;
+        }
+        .locked-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(248,250,252,.85);
+            backdrop-filter: blur(5px);
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 1.5rem;
+            z-index: 5;
+        }
+        .lock-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #ede9fe;
+            border: 1px solid #c4b5fd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+        }
+        .locked-overlay h6 { font-weight: 800; font-size: 0.9rem; margin: 0 0 0.4rem; }
+        .locked-overlay p  { font-size: 0.78rem; color: var(--text-muted); margin: 0 0 1rem; }
+        .btn-upgrade {
+            background: linear-gradient(90deg, #6366f1, #818cf8);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 0.55rem 1.25rem;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: opacity .15s;
+        }
+        .btn-upgrade:hover { opacity: 0.88; color: #fff; text-decoration: none; }
+        .ghost-cards { pointer-events: none; user-select: none; opacity: 0.35; }
+
+        /* ── Responsive ── */
+        @media (max-width: 900px) {
+            .page-wrap { grid-template-columns: 1fr; }
+            .search-wrap { display: none; }
+        }
+        @media (max-width: 600px) {
+            .page-wrap { padding: 1.25rem 1rem 2rem; }
+            .top-nav { padding: 0 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── Navbar ── -->
+<nav class="top-nav">
+    <a class="nav-brand" href="#">
+        <img src="{% static 'images/InsightPilot_AI_icon.jpg' %}" alt="Logo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="logo-fallback" style="display:none;">IP</div>
+        InsightPilot AI
+    </a>
+
+    <div class="search-wrap">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="product-search" type="search" placeholder="Search products…">
+    </div>
+
+    <div class="shop-pill">{{ shop_name }}</div>
+</nav>
+
+<!-- ── Page content ── -->
+<div class="page-wrap">
+
+    <!-- Left: products -->
+    <div>
         {% if messages %}
-        <div class="messages">
             {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}" style="padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px; color: #3c763d; background-color: #dff0d8; border-color: #d6e9c6;">
+                <div class="alert-custom {% if message.tags == 'success' %}alert-success{% else %}alert-info{% endif %}">
                     {{ message }}
                 </div>
             {% endfor %}
-        </div>
         {% endif %}
-        <div class="row mx-xl-2 mx-0">
-            <div class="container col-xl-9 col-12 mt-5">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2>Your Products</h2>
-                    <span id="product-count" class="badge bg-info text-dark">{{ products|length }} Products found</span>
-                </div>
 
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Image</th>
-                                <th>Product Title</th>
-                                <th>Status</th>
-                                <th>Type</th>
-                                <th class="text-end">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="product-table-body">
-                            {% for product in products %}
-                            <tr>
-                                <td>
-                                    {% if product.images %}
-                                        <img src="{{ product.images.0.src }}" alt="{{ product.title }}" style="width: 50px; height: 50px; object-fit: cover;" class="rounded shadow-sm">
-                                    {% else %}
-                                        <div class="bg-secondary text-white rounded d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">N/A</div>
-                                    {% endif %}
-                                </td>
-                                <td><strong>{{ product.title }}</strong></td>
-                                <td>
-                                    <span class="badge {% if product.status == 'active' %}bg-success{% else %}bg-warning{% endif %}">
-                                        {{ product.status|upper }}
-                                    </span>
-                                </td>
-                                <td>{{ product.product_type }}</td>
-                                <td class="text-end">
-                                    <a href="/analysis/?shop={{shop_url}}&product={{ product.id }}/" class="btn btn-primary btn-sm">
-                                        Analyze Reviews
-                                    </a>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr id="no-products-row">
-                                <td colspan="5" class="text-center py-4">No products found in your store.</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="d-flex flex-column align-items-center col-xl-3 col-12 mt-5 g-5">
-                <h3 class="mb-4 mt-3">Market Intelligence Insights</h3>
-                {% if user_plan == 'Premium' %}
-                <div class="card mb-3 border-start border-primary border-4 shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title d-flex align-items-center">
-                            <span class="me-2">📊</span> Competitor Price Benchmarking
-                        </h5>
-                        <p class="card-text text-muted">
-                            Your average product price is <strong>12% higher</strong> than similar shops in the "Electronics" category. 
-                            Consider a promotional bundle to increase competitiveness.
-                        </p>
-                    </div>
-                </div>
-                <div class="card mb-3 border-start border-success border-4 shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title d-flex align-items-center">
-                            <span class="me-2">😊</span> Customer Sentiment Analysis
-                        </h5>
-                        <p class="card-text text-muted">
-                            Sentiment regarding "Shipping Speed" has improved by <strong>24%</strong> this month. 
-                            However, "Packaging Quality" is the most mentioned negative topic in the last 7 days.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="card mb-3 border-start border-warning border-4 shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title d-flex align-items-center">
-                            <span class="me-2">🚀</span> Market Opportunity Gap
-                        </h5>
-                        <p class="card-text text-muted">
-                            Competitors are seeing a surge in demand for <strong>"Eco-friendly materials"</strong>. 
-                            Adding this keyword to your product descriptions could increase organic search traffic by an estimated 15%.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="card mb-3 border-start border-danger border-4 shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title d-flex align-items-center text-danger">
-                            <span class="me-2">⚠️</span> Retention Risk Alert
-                        </h5>
-                        <p class="card-text text-muted">
-                            30% of your repeat customers have not purchased in the last 90 days. 
-                            A <strong>Win-Back Email Campaign</strong> with a 10% discount is recommended.
-                        </p>
-                    </div>
-                </div>
-                {% else %}
-                <div class="position-relative w-100">
-                    
-                    <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center rounded shadow-lg" 
-                        style="background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(4px); z-index: 10;">
-                        <div class="text-center p-4 bg-white rounded shadow border">
-                            <span style="font-size: 2rem;">🔒</span>
-                            <h5 class="fw-bold mt-2">Premium Feature</h5>
-                            <p class="small text-muted mb-3">Upgrade to <strong>Premium</strong> to unlock deep market insights, competitor gaps, and predictive alerts.</p>
-                            <a href="/billing/pricing?shop={{shop_url}}" class="btn btn-info btn-sm fw-bold">Upgrade Now</a>
-                        </div>
-                    </div>
-
-                    <div style="user-select: none; pointer-events: none; opacity: 0.4;">
-                        <div class="card mb-3 border-start border-primary border-4 shadow-sm">
-                            <div class="card-body">
-                                <h5 class="card-title d-flex align-items-center">
-                                    <span class="me-2">📊</span> Competitor Benchmarking
-                                </h5>
-                                <p class="card-text text-muted small">Comparison data is currently hidden.</p>
-                            </div>
-                        </div>
-
-                        <div class="card mb-3 border-start border-warning border-4 shadow-sm">
-                            <div class="card-body">
-                                <h5 class="card-title d-flex align-items-center">
-                                    <span class="me-2">🚀</span> Market Opportunity Gap
-                                </h5>
-                                <p class="card-text text-muted small">Analyze trending keywords and niche opportunities.</p>
-                            </div>
-                        </div>
-
-                        <div class="card mb-3 border-start border-danger border-4 shadow-sm">
-                            <div class="card-body">
-                                <h5 class="card-title d-flex align-items-center text-danger">
-                                    <span class="me-2">⚠️</span> Risk Alerts
-                                </h5>
-                                <p class="card-text text-muted small">Customer retention monitoring active in Premium.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
-            </div>
+        <div class="page-header">
+            <h1 class="page-title">Your Products</h1>
+            <span id="product-count" class="count-badge">{{ products|length }} products</span>
         </div>
-        <script src="{% static 'js/searchField.js' %}"></script>
-    </body>
+
+        <div class="panel">
+            <table class="product-table">
+                <thead>
+                    <tr>
+                        <th style="width:52px;"></th>
+                        <th>Product</th>
+                        <th>Status</th>
+                        <th>Type</th>
+                        <th style="text-align:right;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="product-table-body">
+                    {% for product in products %}
+                    <tr>
+                        <td>
+                            {% if product.images %}
+                                <img src="{{ product.images.0.src }}" alt="{{ product.title }}" class="product-img">
+                            {% else %}
+                                <div class="product-img-placeholder">N/A</div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="product-title">{{ product.title }}</div>
+                            {% if product.vendor %}<div class="product-type">{{ product.vendor }}</div>{% endif %}
+                        </td>
+                        <td>
+                            <span class="status-pill {% if product.status == 'active' %}pill-active{% else %}pill-inactive{% endif %}">
+                                {{ product.status }}
+                            </span>
+                        </td>
+                        <td style="font-size:.82rem;color:var(--text-muted);">{{ product.product_type|default:"—" }}</td>
+                        <td style="text-align:right;">
+                            <a href="/analysis/?shop={{ shop_url }}&product={{ product.id }}/" class="btn-analyze">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                                Analyze
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr id="no-products-row">
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <div class="empty-icon">📦</div>
+                                <p>No products found in your store.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Right: insights sidebar -->
+    <div>
+        <div class="sidebar-title">
+            <div class="dot"></div>
+            Market Intelligence
+        </div>
+
+        {% if user_plan == 'Premium' %}
+            <div class="insight-card">
+                <div class="insight-card-inner">
+                    <div class="insight-icon icon-blue">📊</div>
+                    <div>
+                        <h6>Competitor Price Benchmarking</h6>
+                        <p>Your average price is <strong>12% higher</strong> than similar shops in "Electronics". Consider a promotional bundle.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-card-inner">
+                    <div class="insight-icon icon-green">😊</div>
+                    <div>
+                        <h6>Customer Sentiment Analysis</h6>
+                        <p>Sentiment around "Shipping Speed" improved <strong>+24%</strong> this month. "Packaging Quality" is the top negative topic.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-card-inner">
+                    <div class="insight-icon icon-yellow">🚀</div>
+                    <div>
+                        <h6>Market Opportunity Gap</h6>
+                        <p>Demand for <strong>"Eco-friendly materials"</strong> is surging. Adding this keyword could boost organic traffic by ~15%.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-card-inner">
+                    <div class="insight-icon icon-red">⚠️</div>
+                    <div>
+                        <h6>Retention Risk Alert</h6>
+                        <p><strong>30%</strong> of repeat customers haven't purchased in 90 days. A win-back campaign with 10% off is recommended.</p>
+                    </div>
+                </div>
+            </div>
+
+        {% else %}
+            <div class="locked-wrap">
+                <div class="locked-overlay">
+                    <div class="lock-icon">🔒</div>
+                    <h6>Premium Feature</h6>
+                    <p>Upgrade to <strong>Premium</strong> to unlock deep market insights, competitor gaps, and predictive alerts.</p>
+                    <a href="/billing/pricing?shop={{ shop_url }}" class="btn-upgrade">Upgrade Now</a>
+                </div>
+                <div class="ghost-cards">
+                    <div class="insight-card">
+                        <div class="insight-card-inner">
+                            <div class="insight-icon icon-blue">📊</div>
+                            <div>
+                                <h6>Competitor Benchmarking</h6>
+                                <p>Comparison data is currently hidden.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="insight-card">
+                        <div class="insight-card-inner">
+                            <div class="insight-icon icon-yellow">🚀</div>
+                            <div>
+                                <h6>Market Opportunity Gap</h6>
+                                <p>Analyze trending keywords and niche opportunities.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="insight-card">
+                        <div class="insight-card-inner">
+                            <div class="insight-icon icon-red">⚠️</div>
+                            <div>
+                                <h6>Retention Risk Alerts</h6>
+                                <p>Customer retention monitoring active in Premium.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+</div>
+
+<script src="{% static 'js/searchField.js' %}"></script>
+</body>
 </html>

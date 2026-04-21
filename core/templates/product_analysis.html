@@ -1,280 +1,645 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>InsightPilot AI</title>
-        <meta name="description" content="Analyse your product with AI">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-        <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    </head>
-    <body class="bg-light">
-        <nav class="navbar navbar-dark bg-dark mb-4">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/?shop={{shop_url}}">← Back to Products</a>
-                <span class="navbar-text text-white">InsightPilot AI | {{ shop_name }}</span>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{{ product.title }} — InsightPilot AI</title>
+    <meta name="description" content="Analyse your product with AI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <style>
+        :root {
+            --accent: #6366f1;
+            --accent-light: #818cf8;
+            --surface: #ffffff;
+            --surface-2: #f8fafc;
+            --border: #e2e8f0;
+            --text-muted: #64748b;
+            --danger: #ef4444;
+            --success: #22c55e;
+            --warning: #f59e0b;
+        }
+
+        body {
+            background: var(--surface-2);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #1e293b;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
+        /* ── Navbar ── */
+        .top-nav {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .top-nav .back-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color .15s;
+        }
+        .top-nav .back-link:hover { color: var(--accent); }
+        .top-nav .brand {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .top-nav .shop-badge {
+            background: #f1f5f9;
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            font-weight: 500;
+            padding: 0.25rem 0.65rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+        }
+
+        /* ── Hero ── */
+        .product-hero {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 60%, #4338ca 100%);
+            color: #fff;
+            padding: 2.5rem 1.5rem 3.5rem;
+        }
+        .product-hero .hero-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        .product-hero .product-image-wrap {
+            flex-shrink: 0;
+            width: 110px;
+            height: 110px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 3px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .product-hero .product-image-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .product-hero .no-image-text {
+            font-size: 0.75rem;
+            opacity: 0.6;
+        }
+        .product-hero .breadcrumb-custom {
+            display: flex;
+            gap: 0.35rem;
+            align-items: center;
+            font-size: 0.75rem;
+            opacity: 0.65;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .product-hero .breadcrumb-custom span { color: rgba(255,255,255,0.4); }
+        .product-hero h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 0.6rem;
+            line-height: 1.25;
+        }
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .status-pill.active   { background: rgba(34,197,94,.2);  color: #86efac; border: 1px solid rgba(34,197,94,.3); }
+        .status-pill.inactive { background: rgba(245,158,11,.2); color: #fcd34d; border: 1px solid rgba(245,158,11,.3); }
+        .status-pill::before  { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+        /* ── Stats strip ── */
+        .stats-strip {
+            max-width: 1100px;
+            margin: -1.5rem auto 0;
+            padding: 0 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.25rem 1.5rem;
+            box-shadow: 0 1px 4px rgba(0,0,0,.06);
+        }
+        .stat-card .stat-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+            margin-bottom: 0.35rem;
+        }
+        .stat-card .stat-value {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #1e293b;
+            line-height: 1;
+        }
+        .stat-card .stat-sub {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        /* ── Main layout ── */
+        .main-wrap {
+            max-width: 1100px;
+            margin: 2rem auto 3rem;
+            padding: 0 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        /* ── Cards ── */
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0,0,0,.06);
+            margin-bottom: 1.25rem;
+        }
+        .panel-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #1e293b;
+        }
+        .panel-header .panel-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+        }
+
+        /* ── Spec table ── */
+        .spec-table { width: 100%; border-collapse: collapse; }
+        .spec-table tr { border-bottom: 1px solid var(--border); }
+        .spec-table tr:last-child { border-bottom: none; }
+        .spec-table th {
+            padding: 0.85rem 1.5rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            width: 30%;
+            vertical-align: top;
+        }
+        .spec-table td {
+            padding: 0.85rem 1.5rem 0.85rem 0;
+            font-size: 0.875rem;
+            color: #1e293b;
+            vertical-align: top;
+        }
+        .spec-table code {
+            background: #f1f5f9;
+            color: var(--accent);
+            padding: 0.15rem 0.45rem;
+            border-radius: 6px;
+            font-size: 0.82rem;
+        }
+        .tag-chip {
+            display: inline-block;
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.15rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin: 0.1rem;
+        }
+
+        /* ── Variant table ── */
+        .variant-table { width: 100%; border-collapse: collapse; }
+        .variant-table thead tr { border-bottom: 2px solid var(--border); }
+        .variant-table tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
+        .variant-table tbody tr:last-child { border-bottom: none; }
+        .variant-table tbody tr:hover { background: #f8fafc; }
+        .variant-table th {
+            padding: 0.7rem 1.5rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+        }
+        .variant-table td {
+            padding: 0.85rem 1.5rem;
+            font-size: 0.875rem;
+        }
+        .stock-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .stock-ok      { background: #dcfce7; color: #166534; }
+        .stock-low     { background: #fef9c3; color: #854d0e; }
+        .stock-critical{ background: #fee2e2; color: #991b1b; }
+        .sku-text      { color: var(--text-muted); font-size: 0.78rem; font-family: monospace; }
+
+        /* ── AI Plan Cards ── */
+        .ai-card {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,.15);
+        }
+        .ai-card-premium {
+            background: linear-gradient(160deg, #0f172a 0%, #1e1b4b 100%);
+            border: 1px solid rgba(99,102,241,.35);
+        }
+        .ai-card-basic {
+            background: linear-gradient(160deg, #0f172a 0%, #1a2035 100%);
+            border: 1px solid rgba(148,163,184,.25);
+        }
+        .ai-card-free {
+            background: linear-gradient(160deg, #0f172a 0%, #1e293b 100%);
+            border: 1px solid rgba(148,163,184,.2);
+        }
+        .ai-card-body { padding: 1.4rem; }
+        .ai-card-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.85rem;
+        }
+        .ai-card-title { font-weight: 800; font-size: 1rem; }
+        .ai-plan-badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            padding: 0.25rem 0.65rem;
+            border-radius: 20px;
+        }
+        .badge-premium { background: rgba(99,102,241,.25); color: #a5b4fc; border: 1px solid rgba(99,102,241,.4); }
+        .badge-basic   { background: rgba(148,163,184,.15); color: #94a3b8; border: 1px solid rgba(148,163,184,.3); }
+        .badge-free    { background: rgba(255,255,255,.08); color: #cbd5e1; border: 1px solid rgba(255,255,255,.15); }
+        .ai-card-subtitle { font-size: 0.78rem; color: rgba(255,255,255,0.45); margin-bottom: 1rem; }
+        .ai-feature {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,.07);
+        }
+        .ai-feature:last-of-type { border-bottom: none; margin-bottom: 0.5rem; }
+        .ai-feature-name { font-size: 0.85rem; font-weight: 700; color: #e2e8f0; }
+        .ai-feature-desc { font-size: 0.78rem; color: rgba(255,255,255,.42); padding-left: 0; line-height: 1.5; }
+        .ai-footer {
+            background: rgba(255,255,255,.04);
+            border-top: 1px solid rgba(255,255,255,.07);
+            padding: 0.85rem 1.4rem;
+            font-size: 0.75rem;
+        }
+        .ai-footer-premium { color: #a5b4fc; }
+        .ai-footer-basic   { color: #94a3b8; }
+        .ai-footer-free    { color: #64748b; }
+        .ai-btn {
+            display: block;
+            width: 100%;
+            text-align: center;
+            padding: 0.65rem;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            border: none;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: opacity .15s, transform .1s;
+        }
+        .ai-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+        .ai-btn-premium { background: linear-gradient(90deg, #6366f1, #818cf8); color: #fff; }
+        .ai-btn-basic   { background: rgba(148,163,184,.2); color: #e2e8f0; border: 1px solid rgba(148,163,184,.3); }
+        .ai-btn-free    { background: rgba(99,102,241,.15); color: #a5b4fc; border: 1px solid rgba(99,102,241,.3); }
+        .upgrade-link   { color: #818cf8; text-decoration: none; font-weight: 600; }
+        .upgrade-link:hover { color: #a5b4fc; }
+
+        /* ── Description expand ── */
+        .desc-text {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+        .desc-toggle {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--accent);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        .desc-toggle:hover { color: var(--accent-light); }
+
+        /* ── Responsive ── */
+        @media (max-width: 900px) {
+            .main-wrap { grid-template-columns: 1fr; }
+            .stats-strip { grid-template-columns: 1fr 1fr; }
+            .product-hero h1 { font-size: 1.4rem; }
+        }
+        @media (max-width: 600px) {
+            .stats-strip { grid-template-columns: 1fr; }
+            .product-hero .hero-inner { flex-direction: column; gap: 1rem; align-items: flex-start; }
+            .spec-table th, .spec-table td { padding: 0.75rem 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── Navbar ── -->
+<nav class="top-nav">
+    <a class="back-link" href="/?shop={{ shop_url }}">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        Back to Products
+    </a>
+    <div class="brand">
+        InsightPilot AI
+    </div>
+    <div class="shop-badge">{{ shop_name }}</div>
+</nav>
+
+<!-- ── Hero ── -->
+<div class="product-hero">
+    <div class="hero-inner">
+        <div class="product-image-wrap">
+            {% if product.images %}
+                <img src="{{ product.images.0.src }}" alt="{{ product.title }}">
+            {% else %}
+                <span class="no-image-text">No Image</span>
+            {% endif %}
+        </div>
+        <div>
+            <div class="breadcrumb-custom">
+                {% if product.product_type %}{{ product.product_type }}{% endif %}
+                {% if product.product_type and product.vendor %}<span>/</span>{% endif %}
+                {% if product.vendor %}{{ product.vendor }}{% endif %}
             </div>
-        </nav>
+            <h1>{{ product.title }}</h1>
+            <span class="status-pill {% if product.status == 'active' %}active{% else %}inactive{% endif %}">
+                {{ product.status }}
+            </span>
+        </div>
+    </div>
+</div>
 
-        <div class="container">
-            <div class="row mb-4 align-items-center">
-                <div class="col-md-2">
-                    {% if product.images %}
-                        <img src="{{ product.images.0.src }}" class="img-fluid rounded shadow-sm border" alt="Product Image">
-                    {% else %}
-                        <div class="bg-secondary text-white rounded d-flex align-items-center justify-content-center" style="height: 150px;">No Image</div>
-                    {% endif %}
-                </div>
-                <div class="col-md-10">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item small text-uppercase">{{ product.product_type }}</li>
-                            <li class="breadcrumb-item small text-uppercase">{{ product.vendor }}</li>
-                        </ol>
-                    </nav>
-                    <h1 class="display-5 fw-bold">{{ product.title }}</h1>
-                    <span class="badge {% if product.status == 'active' %}bg-success{% else %}bg-warning text-dark{% endif %}">
-                        Status: {{ product.status|upper }}
-                    </span>
-                </div>
+<!-- ── Stats strip ── -->
+<div class="stats-strip">
+    <div class="stat-card">
+        <div class="stat-label">Total Inventory</div>
+        <div class="stat-value">{{ total_inventory }}</div>
+        <div class="stat-sub">units across all variants</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Price Range</div>
+        <div class="stat-value" style="font-size:1.3rem;">{{ price_range }} €</div>
+        <div class="stat-sub">{% if product.variants|length == 1 %}single variant{% else %}{{ product.variants|length }} variants{% endif %}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Variants</div>
+        <div class="stat-value">{{ product.variants|length }}</div>
+        <div class="stat-sub">active product options</div>
+    </div>
+</div>
+
+<!-- ── Main content ── -->
+<div class="main-wrap">
+
+    <!-- Left column -->
+    <div>
+        <!-- Specifications -->
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-icon">📋</div>
+                Product Specifications
             </div>
+            <table class="spec-table">
+                <tr>
+                    <th>Handle</th>
+                    <td><code>{{ product.handle }}</code></td>
+                </tr>
+                <tr>
+                    <th>Tags</th>
+                    <td>
+                        {% for tag in tags %}
+                            <span class="tag-chip">{{ tag }}</span>
+                        {% empty %}
+                            <span style="color:var(--text-muted);font-size:.85rem;">—</span>
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Created</th>
+                    <td style="color:var(--text-muted);font-size:.85rem;">{{ product.created_at|slice:":10" }}</td>
+                </tr>
+                <tr>
+                    <th>Description</th>
+                    <td>
+                        <p class="desc-text mb-0" id="desc-short">{{ product.body_html|striptags|truncatewords:30 }}</p>
+                        <p class="desc-text mb-0 d-none" id="desc-full">{{ product.body_html|striptags }}</p>
+                        <button class="desc-toggle" onclick="toggleDesc()">Show full description</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
-            <div class="row g-4">
-                <div class="col-lg-8">
-                    <div class="card shadow-sm mb-4">
-                        <div class="card-header bg-white fw-bold">Product Specifications</div>
-                        <div class="card-body p-0">
-                            <table class="table table-hover mb-0">
-                                <tbody>
-                                    <tr>
-                                        <th class="ps-3 w-25">Handle</th>
-                                        <td><code>{{ product.handle }}</code></td>
-                                    </tr>
-                                    <tr>
-                                        <th class="ps-3">Tags</th>
-                                        <td>
-                                            {% for tag in product.tags.split %}
-                                                <span class="badge border text-dark bg-light">{{ tag }}</span>
-                                            {% endfor %}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th class="ps-3">Created At</th>
-                                        <td>{{ product.created_at|slice:":10" }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="ps-3">Description</th>
-                                        <td class="small text-muted">
-                                            {{ product.body_html|striptags|truncatewords:30 }}
-                                            <hr>
-                                            <button class="btn btn-sm btn-outline-secondary">Show full HTML</button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-white fw-bold">Variants & Stock Analysis</div>
-                        <div class="card-body p-0">
-                            <table class="table table-sm mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th class="ps-3">Title</th>
-                                        <th>Price</th>
-                                        <th>SKU</th>
-                                        <th class="text-center">Stock</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for variant in product.variants %}
-                                    <tr>
-                                        <td class="ps-3">{{ variant.title }}</td>
-                                        <td>{{ variant.price }} {{ product.currency }}</td>
-                                        <td><small class="text-muted">{{ variant.sku|default:"-" }}</small></td>
-                                        <td class="text-center">
-                                            <span class="{% if variant.inventory_quantity < 5 %}text-danger fw-bold{% endif %}">
-                                                {{ variant.inventory_quantity }}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4">
-                    <div class="card border-primary mb-4 shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">Quick Stats</h5>
-                            <hr>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>Total Inventory:</span>
-                                <span class="fw-bold">{{ total_inventory }}</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>Price Range:</span>
-                                <span class="fw-bold">{{ price_range }} €</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>Total Variants:</span>
-                                <span class="fw-bold">{{ product.variants|length }}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {% if user_plan == 'Premium' %}
-                    <div class="card shadow-sm bg-dark text-white border-info">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="card-title text-info mb-0">🚀 Market Intelligence Pro</h5>
-                                <span class="badge bg-info text-dark">PREMIUM</span>
-                            </div>
-                            <p class="small opacity-75">Dominate the market with predictive analytics and trend detection:</p>
-                            
-                            <ul class="list-unstyled small">
-                                <li class="mb-3">
-                                    <div class="d-flex justify-content-between">
-                                        <span><i class="bi bi-crystal-ball"></i> <strong>Predictive Pricing</strong></span>
-                                    </div>
-                                    <div class="ps-3 text-info opacity-75" style="font-size: 0.85rem;">
-                                        Get AI-suggested prices for the next 30 days based on seasonality and live market trends.
-                                    </div>
-                                </li>
-
-                                <li class="mb-3">
-                                    <div class="d-flex justify-content-between">
-                                        <span><i class="bi bi-incognito"></i> <strong>Trend Gap Detection</strong></span>
-                                    </div>
-                                    <div class="ps-3 text-info opacity-75" style="font-size: 0.85rem;">
-                                        Find missing keywords (e.g., "sustainable") currently trending in your niche.
-                                    </div>
-                                </li>
-
-                                <li class="mb-3">
-                                    <div class="d-flex justify-content-between">
-                                        <span><i class="bi bi-cart-check"></i> <strong>Inventory & Cross-Sell Engine</strong></span>
-                                    </div>
-                                    <div class="ps-3 text-info opacity-75" style="font-size: 0.85rem;">
-                                        Predicts "Sold Out" dates and suggests "Frequently Bought Together" bundles.
-                                    </div>
-                                </li>
-                            </ul>
-
-                            <div class="mt-3 p-2 bg-info bg-opacity-10 rounded border border-info border-opacity-25">
-                                <p class="x-small mb-0 text-info" style="font-size: 0.75rem;">
-                                    <strong>Limit:</strong> Unlimited Analyses. <br>
-                                    <i class="bi bi-lightning-fill"></i> Priority AI Processing enabled.
-                                </p>
-                            </div>
-
-                            <button class="btn btn-info btn-sm w-100 mt-3 fw-bold text-dark">Launch Deep Intelligence</button>
-                        </div>
-                    </div>
-                    {% elif user_plan == 'Basic' %}
-                    <div class="card shadow-sm bg-dark text-white border-secondary">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="card-title text-secondary mb-0">✨ AI Growth & Optimization</h5>
-                                <span class="badge bg-secondary">BASIC</span>
-                            </div>
-                            <p class="small opacity-75">Scale your sales with competitor benchmarks and automated copywriting:</p>
-                            
-                            <ul class="list-unstyled small">
-                                <li class="mb-3">
-                                    <div class="d-flex justify-content-between">
-                                        <span><i class="bi bi-person-vs"></i> <strong>Competitor Benchmarking</strong></span>
-                                    </div>
-                                    <div class="ps-3 text-white-50" style="font-size: 0.85rem;">
-                                        AI compares your prices and features against top market competitors using public data.
-                                    </div>
-                                </li>
-
-                                <li class="mb-3">
-                                    <div class="d-flex justify-content-between">
-                                        <span><i class="bi bi-magic"></i> <strong>AI Copywriter</strong></span>
-                                    </div>
-                                    <div class="ps-3 text-white-50" style="font-size: 0.85rem;">
-                                        Rewrite descriptions instantly using high-conversion patterns and psychological triggers.
-                                    </div>
-                                </li>
-
-                                <li class="mb-3">
-                                    <div class="d-flex justify-content-between">
-                                        <span><i class="bi bi-camera"></i> <strong>Smart Variant & Image Audit</strong></span>
-                                    </div>
-                                    <div class="ps-3 text-white-50" style="font-size: 0.85rem;">
-                                        Identifies overstock variants for sales and checks if images meet Shopify Best Practices.
-                                    </div>
-                                </li>
-                            </ul>
-
-                            <div class="mt-3 p-2 bg-secondary bg-opacity-25 rounded">
-                                <p class="x-small mb-0" style="font-size: 0.75rem;">
-                                    <strong>Limit:</strong> 100 products per month. <br>
-                                    <i class="bi bi-check2-all text-success"></i> Includes all Free features.
-                                </p>
-                            </div>
-
-                            <button class="btn btn-secondary btn-sm w-100 mt-3 fw-bold">Run Growth Analysis</button>
-                        </div>
-                    </div>
-                    {% else %}
-                    <div class="card shadow-sm bg-dark text-white border-light">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="card-title text-info mb-0">✨ AI Readiness: The Basics</h5>
-                                <span class="badge bg-light text-dark">FREE</span>
-                            </div>
-                            <p class="small opacity-75">The AI audits your product data for fundamental health and SEO compliance:</p>
-                            
-                            <ul class="list-unstyled small">
-                                <li class="mb-3">
-                                    <div class="d-flex justify-content-between">
-                                        <span><i class="bi bi-tag"></i> <strong>Internal Price Comparison</strong></span>
-                                    </div>
-                                    <div class="ps-3 text-white-50" style="font-size: 0.85rem;">
-                                        The AI compares this product's price against the average price of similar items within your own shop.
-                                    </div>
-                                </li>
-
-                                <li class="mb-3">
-                                    <div class="d-flex justify-content-between">
-                                        <span><i class="bi bi-google"></i> <strong>Basic SEO Check</strong></span>
-                                    </div>
-                                    <div class="ps-3 text-white-50" style="font-size: 0.85rem;">
-                                        Analyzes if your product title and description have the optimal length to be ranked effectively by Google.
-                                    </div>
-                                </li>
-
-                                <li class="mb-3">
-                                    <div class="d-flex justify-content-between">
-                                        <span><i class="bi bi-heart-pulse"></i> <strong>Data Health Score (0-100)</strong></span>
-                                    </div>
-                                    <div class="ps-3 text-white-50" style="font-size: 0.85rem;">
-                                        A simple score based on the completeness of your data, including images, tags, and descriptions.
-                                    </div>
-                                </li>
-                            </ul>
-
-                            <div class="mt-3 p-2 bg-secondary bg-opacity-25 rounded">
-                                <p class="x-small mb-0" style="font-size: 0.75rem;">
-                                    <strong>Limit:</strong> 10 products per month. <br>
-                                    <a href="#" class="text-info text-decoration-none">Upgrade for competitor data & AI writing.</a>
-                                </p>
-                            </div>
-
-                            <button class="btn btn-info btn-sm w-100 mt-3 fw-bold">Start Basic Analysis</button>
-                        </div>
-                    </div>
-                    {% endif %}
-                </div>
+        <!-- Variants -->
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-icon">📦</div>
+                Variants &amp; Stock Analysis
+            </div>
+            <div style="overflow-x:auto;">
+                <table class="variant-table">
+                    <thead>
+                        <tr>
+                            <th>Variant</th>
+                            <th>Price</th>
+                            <th>SKU</th>
+                            <th style="text-align:center;">Stock</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for variant in product.variants %}
+                        <tr>
+                            <td style="font-weight:600;">{{ variant.title }}</td>
+                            <td>{{ variant.price }} €</td>
+                            <td><span class="sku-text">{{ variant.sku|default:"—" }}</span></td>
+                            <td style="text-align:center;">
+                                {% if variant.inventory_quantity <= 0 %}
+                                    <span class="stock-badge stock-critical">{{ variant.inventory_quantity }} Out</span>
+                                {% elif variant.inventory_quantity < 5 %}
+                                    <span class="stock-badge stock-low">{{ variant.inventory_quantity }} Low</span>
+                                {% else %}
+                                    <span class="stock-badge stock-ok">{{ variant.inventory_quantity }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
-    </body>
+    </div>
+
+    <!-- Right column: AI card -->
+    <div>
+        {% if user_plan == 'Premium' %}
+        <div class="ai-card ai-card-premium">
+            <div class="ai-card-body">
+                <div class="ai-card-head">
+                    <span class="ai-card-title" style="color:#c7d2fe;">Market Intelligence Pro</span>
+                    <span class="ai-plan-badge badge-premium">PREMIUM</span>
+                </div>
+                <p class="ai-card-subtitle">Dominate the market with predictive analytics and trend detection.</p>
+
+                <div class="ai-feature">
+                    <span class="ai-feature-name">Predictive Pricing</span>
+                    <span class="ai-feature-desc">AI-suggested prices for the next 30 days based on seasonality and live market trends.</span>
+                </div>
+                <div class="ai-feature">
+                    <span class="ai-feature-name">Trend Gap Detection</span>
+                    <span class="ai-feature-desc">Find missing keywords (e.g., "sustainable") currently trending in your niche.</span>
+                </div>
+                <div class="ai-feature">
+                    <span class="ai-feature-name">Inventory &amp; Cross-Sell Engine</span>
+                    <span class="ai-feature-desc">Predicts "Sold Out" dates and suggests "Frequently Bought Together" bundles.</span>
+                </div>
+
+                <button class="ai-btn ai-btn-premium">Launch Deep Intelligence</button>
+            </div>
+            <div class="ai-footer ai-footer-premium">
+                <strong>Unlimited analyses</strong> &nbsp;·&nbsp; Priority AI processing enabled
+            </div>
+        </div>
+
+        {% elif user_plan == 'Basic' %}
+        <div class="ai-card ai-card-basic">
+            <div class="ai-card-body">
+                <div class="ai-card-head">
+                    <span class="ai-card-title" style="color:#cbd5e1;">AI Growth &amp; Optimization</span>
+                    <span class="ai-plan-badge badge-basic">BASIC</span>
+                </div>
+                <p class="ai-card-subtitle">Scale your sales with competitor benchmarks and automated copywriting.</p>
+
+                <div class="ai-feature">
+                    <span class="ai-feature-name">Competitor Benchmarking</span>
+                    <span class="ai-feature-desc">AI compares your prices and features against top market competitors using public data.</span>
+                </div>
+                <div class="ai-feature">
+                    <span class="ai-feature-name">AI Copywriter</span>
+                    <span class="ai-feature-desc">Rewrite descriptions instantly using high-conversion patterns and psychological triggers.</span>
+                </div>
+                <div class="ai-feature">
+                    <span class="ai-feature-name">Smart Variant &amp; Image Audit</span>
+                    <span class="ai-feature-desc">Identifies overstock variants for sales and checks if images meet Shopify best practices.</span>
+                </div>
+
+                <button class="ai-btn ai-btn-basic">Run Growth Analysis</button>
+            </div>
+            <div class="ai-footer ai-footer-basic">
+                <strong>100 products / month</strong> &nbsp;·&nbsp; Includes all Free features
+            </div>
+        </div>
+
+        {% else %}
+        <div class="ai-card ai-card-free">
+            <div class="ai-card-body">
+                <div class="ai-card-head">
+                    <span class="ai-card-title" style="color:#e2e8f0;">AI Readiness: The Basics</span>
+                    <span class="ai-plan-badge badge-free">FREE</span>
+                </div>
+                <p class="ai-card-subtitle">The AI audits your product data for fundamental health and SEO compliance.</p>
+
+                <div class="ai-feature">
+                    <span class="ai-feature-name">Internal Price Comparison</span>
+                    <span class="ai-feature-desc">Compares this product's price against the average price of similar items in your shop.</span>
+                </div>
+                <div class="ai-feature">
+                    <span class="ai-feature-name">Basic SEO Check</span>
+                    <span class="ai-feature-desc">Analyzes if your title and description have the optimal length to rank effectively on Google.</span>
+                </div>
+                <div class="ai-feature">
+                    <span class="ai-feature-name">Data Health Score (0–100)</span>
+                    <span class="ai-feature-desc">A score based on completeness of your data — images, tags, and description.</span>
+                </div>
+
+                <button class="ai-btn ai-btn-free">Start Basic Analysis</button>
+            </div>
+            <div class="ai-footer ai-footer-free">
+                <strong>10 products / month</strong> &nbsp;·&nbsp;
+                <a href="/billing/pricing?shop={{ shop_url }}" class="upgrade-link">Upgrade for competitor data &amp; AI writing →</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+
+<script>
+function toggleDesc() {
+    const short = document.getElementById('desc-short');
+    const full  = document.getElementById('desc-full');
+    const btn   = document.querySelector('.desc-toggle');
+    if (full.classList.contains('d-none')) {
+        short.classList.add('d-none');
+        full.classList.remove('d-none');
+        btn.textContent = 'Show less';
+    } else {
+        full.classList.add('d-none');
+        short.classList.remove('d-none');
+        btn.textContent = 'Show full description';
+    }
+}
+</script>
+</body>
 </html>
