@@ -1,0 +1,27 @@
+# Environment
+.env
+venv/
+
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+
+# Database
+db.sqlite3
+
+# Django collected static
+staticfiles/
+
+# Media uploads
+media/
+
+# Logs
+*.log
+
+# Claude Code
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
