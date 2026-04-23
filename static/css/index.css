@@ -353,10 +353,19 @@ body {
 .btn-upgrade:hover { opacity: 0.88; color: #fff; text-decoration: none; }
 .ghost-cards { pointer-events: none; user-select: none; opacity: 0.35; }
 
+/* ── Mobile search bar ── */
+.mobile-search-bar {
+    display: none;
+    padding: 0.65rem 1rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+}
+
 /* ── Responsive ── */
 @media (max-width: 900px) {
     .page-wrap { grid-template-columns: 1fr; }
     .search-wrap { display: none; }
+    .mobile-search-bar { display: flex; }
 }
 @media (max-width: 600px) {
     .page-wrap { padding: 1.25rem 1rem 2rem; }
