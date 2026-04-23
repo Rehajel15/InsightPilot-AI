@@ -144,7 +144,7 @@ body {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 16px;
-    overflow: hidden;
+    overflow: clip;
     box-shadow: 0 1px 4px rgba(0,0,0,.06);
 }
 
@@ -370,4 +370,19 @@ body {
 @media (max-width: 600px) {
     .page-wrap { padding: 1.25rem 1rem 2rem; }
     .top-nav { padding: 0 1rem; }
+
+    /* Reduce table cell padding */
+    .product-table th,
+    .product-table td { padding: 0.7rem 0.75rem; }
+
+    /* Hide the least important column (Type) */
+    .product-table th:nth-child(4),
+    .product-table td:nth-child(4) { display: none; }
+
+    /* Smaller image thumbnail */
+    .product-img,
+    .product-img-placeholder { width: 36px; height: 36px; }
+
+    /* Compact analyze button */
+    .btn-analyze { padding: 0.4rem 0.65rem; font-size: 0.75rem; }
 }
