@@ -364,8 +364,9 @@ body {
 /* ── Responsive ── */
 @media (max-width: 900px) {
     .page-wrap { grid-template-columns: 1fr; }
-    .search-wrap { display: none; }
+    .top-nav .search-wrap { display: none; }
     .mobile-search-bar { display: flex; }
+    .mobile-search-bar .search-wrap { display: flex; }
 }
 @media (max-width: 600px) {
     .page-wrap { padding: 1.25rem 1rem 2rem; }
