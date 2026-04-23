@@ -1,36 +1,33 @@
 (function () {
-    const productCountBadge = document.getElementById('product-count');
-    const tableBody = document.getElementById('product-table-body');
-    if (!tableBody) return;
+    function filter(query) {
+        const tbody = document.getElementById('product-table-body');
+        if (!tbody) return;
 
-    const rows = tableBody.getElementsByTagName('tr');
+        const q = (query || '').toLowerCase().trim();
+        const rows = tbody.querySelectorAll('tr');
+        let count = 0;
 
-    function filterProducts(searchTerm) {
-        searchTerm = searchTerm.toLowerCase();
-        let visibleCount = 0;
-        for (let i = 0; i < rows.length; i++) {
-            if (rows[i].id === 'no-products-row') continue;
-            const title = rows[i].cells[1] ? rows[i].cells[1].textContent.toLowerCase() : '';
-            const type  = rows[i].cells[3] ? rows[i].cells[3].textContent.toLowerCase() : '';
-            if (title.includes(searchTerm) || type.includes(searchTerm)) {
-                rows[i].style.display = '';
-                visibleCount++;
+        rows.forEach(function (row) {
+            if (row.id === 'no-products-row') return;
+            const text = row.textContent.toLowerCase();
+            if (text.indexOf(q) !== -1) {
+                row.style.display = '';
+                count++;
             } else {
-                rows[i].style.display = 'none';
+                row.style.display = 'none';
             }
-        }
-        if (productCountBadge) {
-            productCountBadge.textContent = visibleCount + ' Products found';
-        }
+        });
+
+        const badge = document.getElementById('product-count');
+        if (badge) badge.textContent = count + ' Products found';
     }
 
-    function attachSearch(id) {
+    function wire(id) {
         const el = document.getElementById(id);
         if (!el) return;
-        el.addEventListener('input', function () { filterProducts(el.value); });
-        el.addEventListener('keyup',  function () { filterProducts(el.value); });
+        el.addEventListener('input', function () { filter(el.value); });
     }
 
-    attachSearch('product-search');
-    attachSearch('product-search-mobile');
-}());
+    wire('product-search');
+    wire('product-search-mobile');
+})();
