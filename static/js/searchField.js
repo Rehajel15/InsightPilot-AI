@@ -1,6 +1,8 @@
-document.addEventListener('DOMContentLoaded', function() {
+(function () {
     const productCountBadge = document.getElementById('product-count');
     const tableBody = document.getElementById('product-table-body');
+    if (!tableBody) return;
+
     const rows = tableBody.getElementsByTagName('tr');
 
     function filterProducts(searchTerm) {
@@ -8,8 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
         let visibleCount = 0;
         for (let i = 0; i < rows.length; i++) {
             if (rows[i].id === 'no-products-row') continue;
-            const title = rows[i].cells[1].textContent.toLowerCase();
-            const type = rows[i].cells[3].textContent.toLowerCase();
+            const title = rows[i].cells[1] ? rows[i].cells[1].textContent.toLowerCase() : '';
+            const type  = rows[i].cells[3] ? rows[i].cells[3].textContent.toLowerCase() : '';
             if (title.includes(searchTerm) || type.includes(searchTerm)) {
                 rows[i].style.display = '';
                 visibleCount++;
@@ -17,16 +19,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 rows[i].style.display = 'none';
             }
         }
-        productCountBadge.textContent = visibleCount + ' Products found';
+        if (productCountBadge) {
+            productCountBadge.textContent = visibleCount + ' Products found';
+        }
     }
 
-    const desktopSearch = document.getElementById('product-search');
-    const mobileSearch  = document.getElementById('product-search-mobile');
+    function attachSearch(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('input', function () { filterProducts(el.value); });
+        el.addEventListener('keyup',  function () { filterProducts(el.value); });
+    }
 
-    if (desktopSearch) {
-        desktopSearch.addEventListener('input', () => filterProducts(desktopSearch.value));
-    }
-    if (mobileSearch) {
-        mobileSearch.addEventListener('input', () => filterProducts(mobileSearch.value));
-    }
-});
+    attachSearch('product-search');
+    attachSearch('product-search-mobile');
+}());
